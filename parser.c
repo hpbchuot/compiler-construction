@@ -315,6 +315,10 @@ void compileStatements(void) {
   compileStatements2();
 }
 
+void compileStatement2(void) {
+  compileStatement(); 
+  compileStatements3();
+}
 void compileStatements2(void) {
   switch (lookAhead->tokenType) {
   case SB_SEMICOLON:
@@ -327,6 +331,18 @@ void compileStatements2(void) {
       break;
   // Error
   default:
+      error(ERR_INVALIDSTATEMENT, lookAhead->lineNo, lookAhead->colNo);
+      break;
+  }
+}
+
+void compileStatements3(void) {
+  switch (lookAhead->tokenType) {
+    case KW_UNTIL:
+      break;
+    case KW_END:
+      break;
+    default:
       error(ERR_INVALIDSTATEMENT, lookAhead->lineNo, lookAhead->colNo);
       break;
   }
@@ -422,9 +438,9 @@ void compileWhileSt(void) {
 void compileRepeatSt(void) {
   assert("Parsing a repeat statement ....");
   eat(KW_REPEAT);
-  compileStatements();
+  compileStatement2();
   eat(KW_UNTIL);
-  compileCondition2();
+  compileCondition();
   eat(SB_SEMICOLON);
   assert("Repeat statement pased ....");
 }
@@ -456,10 +472,12 @@ void compileArguments(void) {
   // Follow - term2
   case SB_TIMES:
   case SB_SLASH:
+  case SB_POWER:
   // Follow - expression3
   // Follow (For statement)
   case KW_TO:
   case KW_DO:
+  case KW_UNTIL:
   // Follow (arguments2)
   case SB_COMMA:
   // Follow (condition2)
@@ -580,6 +598,7 @@ void compileExpression3(void) {
   // Follow (For statement)
   case KW_TO:
   case KW_DO:
+  case KW_UNTIL:
   // Follow (arguments2)
   case SB_COMMA:
   // Follow (condition2)
@@ -620,6 +639,11 @@ void compileTerm2(void) {
       compileFactor();
       compileTerm2();
       break;
+  case SB_POWER:
+      eat(SB_POWER);
+      compileFactor();
+      compileTerm2();
+      break;
   // Follow - same as expression3
   case SB_PLUS:
   case SB_MINUS:
@@ -630,6 +654,7 @@ void compileTerm2(void) {
   // Follow (For statement)
   case KW_TO:
   case KW_DO:
+  case KW_UNTIL:
   // Follow (arguments2)
   case SB_COMMA:
   // Follow (condition2)

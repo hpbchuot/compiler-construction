@@ -36,6 +36,8 @@ void compileParam(void);
 void compileStatements(void);
 void compileStatements2(void);
 void compileStatement(void);
+void compileStatement2(void);
+void compileStatements3(void);
 void compileAssignSt(void);
 void compileCallSt(void);
 void compileGroupSt(void);
